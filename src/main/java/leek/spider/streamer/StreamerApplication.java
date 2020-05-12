@@ -1,5 +1,6 @@
 package leek.spider.streamer;
 
+import leek.spider.streamer.dal.FSLogger;
 import leek.spider.streamer.modules.SpiderEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -21,30 +22,35 @@ import java.util.Map;
 @SpringBootApplication
 public class StreamerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(StreamerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(StreamerApplication.class, args);
+    }
 
-	@Value("${spring.kafka.bootstrap-servers}")
-	private String kafkaServer;
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String kafkaServer;
 
-	@Bean
-	public ProducerFactory<String, SpiderEvent> producerFactory() {
-		Map<String, Object> configProps = new HashMap<>();
-		configProps.put(
-				ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-				kafkaServer);
-		configProps.put(
-				ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-				StringSerializer.class);
-		configProps.put(
-				ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-				JsonSerializer.class);
-		return new DefaultKafkaProducerFactory<>(configProps);
-	}
+    @Bean
+    public ProducerFactory<String, SpiderEvent> producerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                kafkaServer);
+        configProps.put(
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class);
+        configProps.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
 
-	@Bean
-	public KafkaTemplate<String, SpiderEvent> kafkaTemplate() {
-		return new KafkaTemplate<>(producerFactory());
-	}
+    @Bean
+    public KafkaTemplate<String, SpiderEvent> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public FSLogger initLogger() {
+        return FSLogger.getInstance();
+    }
 }

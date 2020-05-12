@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" monitorInterval="30">
+    <Properties>
+        <Property name="logPath">D:\\Projects\\streamer\\logs</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="RollingFile"
+                     filePattern="${logPath}\\%d{dd-MM-yyyy}\\log-%d{dd-MM-yyyy}-%i.log"
+                     fileName="${logPath}\\app.log">
+            <JsonLayout compact="true" eventEol="true"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c - %msg%n"/>
+        </Console>
+
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+        <Logger name="org.springframework" level="error">
+            <AppenderRef ref="RollingFile"/>
+        </Logger>
+    </Loggers>
+</Configuration>
